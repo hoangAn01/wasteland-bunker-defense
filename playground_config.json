@@ -1,0 +1,86 @@
+{
+  "schema": [
+    {
+      "name": "startingScrap",
+      "type": "number",
+      "label": "Starting Scrap Metal",
+      "default": 300,
+      "min": 100,
+      "max": 1000,
+      "step": 50
+    },
+    {
+      "name": "startingBunkerHealth",
+      "type": "number",
+      "label": "Bunker Integrity HP",
+      "default": 20,
+      "min": 5,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "name": "earlyWaveBonus",
+      "type": "number",
+      "label": "Early Call Scrap Bonus",
+      "default": 20,
+      "min": 5,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "orbitalStrikeCooldown",
+      "type": "number",
+      "label": "Orbital Strike Cooldown (s)",
+      "default": 30,
+      "min": 10,
+      "max": 60,
+      "step": 5
+    },
+    {
+      "name": "rapidTurretCost",
+      "type": "number",
+      "label": "Rapid Turret Cost",
+      "default": 100,
+      "min": 50,
+      "max": 200,
+      "step": 10
+    },
+    {
+      "name": "cryoTurretCost",
+      "type": "number",
+      "label": "Cryo Turret Cost",
+      "default": 150,
+      "min": 75,
+      "max": 300,
+      "step": 15
+    },
+    {
+      "name": "mortarTurretCost",
+      "type": "number",
+      "label": "Mortar Turret Cost",
+      "default": 220,
+      "min": 100,
+      "max": 400,
+      "step": 20
+    },
+    {
+      "name": "defaultMusicVolume",
+      "type": "number",
+      "label": "Default Music Volume",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.1
+    }
+  ],
+  "values": {
+    "startingScrap": 300,
+    "startingBunkerHealth": 20,
+    "earlyWaveBonus": 20,
+    "orbitalStrikeCooldown": 30,
+    "rapidTurretCost": 100,
+    "cryoTurretCost": 150,
+    "mortarTurretCost": 220,
+    "defaultMusicVolume": 0.5
+  }
+}

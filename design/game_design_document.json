@@ -1,0 +1,112 @@
+{
+  "title": "Wasteland Bunker Defense",
+  "hook": "Defend the bunker against undead",
+  "game_overview": "A gritty tactical tower defense game where players place turrets, traps, and tactical defenses to safeguard the last survivor bunker against 20 deadly undead waves.",
+  "artstyle": "pixelated",
+  "genre": "tower_defense",
+  "winning_condition": "Survive all 20 escalating waves of the zombie horde to secure the survivor bunker.",
+  "losing_condition": "The bunker structural integrity reaches 0 health as zombies breach the perimeter.",
+  "player_mode": "single_player",
+  "supported_orientations": [
+    "landscape"
+  ],
+  "input_methods": [
+    "touch",
+    "mouse",
+    "keyboard"
+  ],
+  "score_options": {
+    "score_type": "points",
+    "score_order": "higher_is_better"
+  },
+  "low_end_device_support": true,
+  "mobile_playable": true,
+  "tv_playable": false,
+  "language": [
+    "en"
+  ],
+  "content_descriptors": [
+    "violence",
+    "fear_horror"
+  ],
+  "controls": [
+    {
+      "input": "Left Click & Drag / Touch & Drag",
+      "action": "Select and drag defensive turrets from the UI dock onto buildable wasteland grid tiles."
+    },
+    {
+      "input": "Click / Tap on Placed Turret",
+      "action": "Open the turret upgrade, target priority selector (First, Strongest, Weakest, Last), or scrap/sell menu."
+    },
+    {
+      "input": "Spacebar / Tap 'Call Wave'",
+      "action": "Trigger the next incoming zombie wave early to earn bonus scrap metal currency."
+    },
+    {
+      "input": "Key 1-4 / Tap Ability Icon",
+      "action": "Activate the tactical Orbital Strike support power on a target area."
+    }
+  ],
+  "sections": [
+    {
+      "title": "Design Pillars",
+      "content": "1. Strategic Depth & Rock-Paper-Scissors: Every turret has a critical role (single-target DPS, cryogenic slowing, road-clearing landmine splash, long-range mortar) countering specific enemy threats. 2. Gritty Post-Apocalyptic Tension: Dynamic audio-visual feedback, screen shake on detonations, and resource scarcity keep players on edge. 3. Active Tactical Agency: Players actively trigger call-wave bonuses, select target priority modes, and deploy support abilities during battle.",
+      "summary": "Core strategic principles guiding balance and engagement."
+    },
+    {
+      "title": "Core Loop",
+      "content": "Between and during waves, the player spends scrap metal currency to construct turrets and deploy traps along a winding perimeter path. The bunker automated radar warns of incoming enemy compositions. Once a wave begins, turrets automatically track and engage targets. Defeated undead yield scrap metal and points. Surviving all 20 waves secures victory; allowing bunker HP to hit 0 causes catastrophic failure.",
+      "summary": "The tactical loop of planning, defending, upgrading, and surviving."
+    },
+    {
+      "title": "Core Mechanics & Tower Arsenal",
+      "content": "1. Rapid-Fire Turret (Cost: 100 Scrap): High firing rate ballistic turret dealing 2 integer damage per shot; ideal for picking off runners and fast swarms. Upgrades increase fire rate and range. 2. Cryo-Beam Projector (Cost: 150 Scrap): Continuous chilling beam dealing 1 damage per tick while applying a 50% movement speed slow to targets. 3. Explosive Road Mine (Cost: 60 Scrap): Ground trap placed directly on the road tile that detonates on contact, dealing 25 integer splash damage in a 90px radius before self-consuming. 4. Heavy Mortar Cannon (Cost: 220 Scrap): Long-range ballistic artillery launching high-explosive shells dealing 15 integer splash damage with burning ground residue.",
+      "summary": "Detailed breakdown of defensive installations and upgrades."
+    },
+    {
+      "title": "Enemy Horde Archetypes",
+      "content": "1. Wasteland Walker (HP: 10, Speed: 1.0, Core Dmg: 1): Standard shambling infected appearing in steady streams. 2. Rabid Sprinter (HP: 5, Speed: 2.2, Core Dmg: 1): Fast, low-health infected that tests rapid-fire and slowing defenses. 3. Armored Behemoth (HP: 50, Speed: 0.5, Core Dmg: 3): Heavily armored mutant taking reduced ballistic damage; requires focused single-target cryo and mortar fire. 4. Feral Abomination Boss (HP: 250, Speed: 0.4, Core Dmg: 10): Appears on Wave 10 and 20; spawns miniature creepers upon taking damage thresholds.",
+      "summary": "Diverse undead variants testing player defense strategies."
+    },
+    {
+      "title": "Movement & Scrolling Alignment",
+      "content": "Scrolling Axis: Static single-screen bounded battlefield with zero scrolling. Asset Orientation: All path tiles, bunker fortress nodes, and turrets strictly adhere to an Oblique 3/4 top-down perspective facing eastward (3 o'clock default for rotatable components). Grid System: Rigid 16x10 coordinate grid (64x64px cell size) with strict validation checks preventing illegal overlapping or path blocking.",
+      "summary": "Map layout, grid alignment, and visual perspective standards."
+    },
+    {
+      "title": "Visual Hierarchy & Layering",
+      "content": "1. Layer Separation: Background floor terrain uses desaturated, muted dark-ochre dirt textures. The roadway uses high-contrast crushed asphalt and gravel with distinct stone curbing. 2. Combat Entities: Defensive turrets feature glowing cyan and amber status indicator lights. Zombies feature sickly green and crimson damage flash effects. 3. HUD Overlay: Fixed bottom dock and top status bar are cleanly partitioned outside active firing lines with semi-transparent tactical styling.",
+      "summary": "Clarity standards separating background, paths, and combat entities."
+    },
+    {
+      "title": "Map Design & Pathing",
+      "content": "The defense map features a fixed winding pathway starting at the northwestern entry gate, making 5 sharp 90-degree turns and a central U-turn loop around hazardous ruins before terminating at the central fortified survivor bunker. Choke points at corners offer high turret overlap value, balanced with straight open zones.",
+      "summary": "Winding perimeter route with strategic choke points."
+    },
+    {
+      "title": "Pacing, Economy & Wave Balancing",
+      "content": "The player starts with 300 Scrap Metal and 20 Bunker Core Integrity HP. Defeating standard walkers grants 5 scrap, sprinters grant 4, behemoths grant 25, and bosses grant 100. Early wave calls grant 20 bonus scrap. Wave 1-5 introduces walkers and sprinters; Waves 6-10 introduces mixed armored behemoth groups and the first boss; Waves 11-19 features high-density swarm surges; Wave 20 features the final apocalyptic multi-boss horde.",
+      "summary": "20-wave progression curve with integer arithmetic."
+    },
+    {
+      "title": "Fairness Tools & HUD Design",
+      "content": "1. Placement Affordance: Dragging a turret shows a semi-transparent circular range indicator, flashing green over valid buildable tiles and red over paths or occupied cells. 2. Targeting Controls: Clicking an active turret opens a context panel allowing players to toggle target priority between First, Strongest, Weakest, and Last. 3. Wave Radar: Top bar displays incoming enemy composition and time until the next wave.",
+      "summary": "Visual range previews, wave radar, and targeting priorities."
+    },
+    {
+      "title": "Juice & Game Feel",
+      "content": "1. Anticipation: Turret barrels smoothly track approaching targets with laser aim dots. 2. State Change: Frozen enemies turn frosty blue with reduced animation speed; damaged turrets emit electrical sparks. 3. Impact Juice: Mortar explosions cause screen shake and leave lingering smoke particles; critical hits trigger a 2-frame hit-stop and burst into pixelated scrap debris.",
+      "summary": "Anticipation, state change, and impact audio-visual feedback."
+    },
+    {
+      "title": "Structural Integrity",
+      "content": "Flow: Splash Screen / Title -> Interactive Difficulty / Mode Select -> Main Gameplay Loop -> Wave Victory / Bunker Overrun Screen with Quick Restart. High scores and highest wave survived are persistently saved in local storage.",
+      "summary": "Game lifecycle, menus, and high score tracking."
+    },
+    {
+      "title": "Virtual Touch Controls Implementation",
+      "content": "Ensure all tower dock slots support direct pointer-drag and tap-to-select workflows for mobile touchscreens. Touch events map onPointerDown, onPointerMove, onPointerUp, onPointerLeave, and onPointerCancel to prevent stuck drag states. Buttons use touch-none CSS to eliminate pinch-zoom interference.",
+      "summary": "Responsive mobile touch controls and drag interaction support."
+    }
+  ]
+}
