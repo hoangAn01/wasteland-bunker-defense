@@ -163,7 +163,7 @@ export const TRANSLATIONS = {
     affixUnstableDesc: 'UNSTABLE: Explodes in a fiery detonation when killed.',
     turretVariantsTitle: 'TURRET SPECIALIZATION VARIANTS:',
     varAutocannonDesc: 'Autocannon: Gatling Overclock (barrage DPS) vs Railgun (Armor Pierce).',
-    varCryoDesc: 'Cryo Beam: Blizzard Nova (AoE slow & freeze) vs Sub-Zero Shatter (+40% Brittle).',
+    varCryoDesc: 'Cryo Beam: Blizzard Nova (AoE slow & freeze; Bosses and Behemoths have high cold resistance) vs Sub-Zero Shatter (+40% Brittle).',
     varMineDesc: 'Road Mine: Cluster Napalm (lingering fire) vs EMP Shockwave (stuns & strips affixes).',
     varMortarDesc: 'Mortar: Hellfire Battery (massive firestorm) vs Heavy Siege (shockwave knockback).',
     techLabTitle: 'ARSENAL TECH LAB:',
@@ -282,7 +282,7 @@ export const TRANSLATIONS = {
     affixUnstableDesc: 'BẤT ỔN (UNSTABLE): Phát nổ rực lửa diện rộng khi chết.',
     turretVariantsTitle: 'CÁC NHÁNH CHUYÊN HÓA CỦA THÁP:',
     varAutocannonDesc: 'Pháo Tự Động: Gatling Siêu Tốc (xả đạn bão hòa) vs Railgun Điện Từ (xuyên 100% Giáp).',
-    varCryoDesc: 'Tia Băng Giá: Bão Tuyết Nova (chậm diện rộng & đóng băng) vs Đập Vỡ (gây hiệu ứng Dễ Vỡ +40% sát thương).',
+    varCryoDesc: 'Tia Băng Giá: Bão Tuyết Nova (chậm & đóng băng diện rộng; Quái Lớn & Boss có khả năng kháng băng cao) vs Đập Vỡ (gây hiệu ứng Dễ Vỡ +40% sát thương).',
     varMineDesc: 'Mìn Đường Bộ: Cụm Napalm (đốt cháy mặt đất kéo dài) vs Xung Điện EMP (làm choáng & xóa bỏ thuộc tính quái).',
     varMortarDesc: 'Súng Cối: Pháo Lửa Địa Ngục (bão lửa cực lớn) vs Pháo Công Kiên (sát thương khổng lồ & đẩy lùi).',
     techLabTitle: 'VIỆN CÔNG NGHỆ:',
@@ -1783,14 +1783,17 @@ export default function App() {
       // Flash timer decay
       if (e.flashTimer > 0) e.flashTimer -= dt;
 
-      // Status Timers
-      if (e.freezeTimer > 0) e.freezeTimer -= dt;
+      // Status Timers with resistance for Behemoth and Boss
+      const freezeDecayRate = e.type === 'BOSS' ? 2.5 : e.type === 'BEHEMOTH' ? 1.8 : 1.0;
+      const slowDecayRate = e.type === 'BOSS' ? 2.0 : e.type === 'BEHEMOTH' ? 1.5 : 1.0;
+
+      if (e.freezeTimer > 0) e.freezeTimer -= dt * freezeDecayRate;
       if (e.brittleTimer > 0) e.brittleTimer -= dt;
-      if (e.stunTimer > 0) e.stunTimer -= dt;
+      if (e.stunTimer > 0) e.stunTimer -= dt * (e.type === 'BOSS' ? 2.0 : e.type === 'BEHEMOTH' ? 1.5 : 1.0);
 
       // Slow timer decay
       if (e.slowTimer > 0) {
-        e.slowTimer -= dt;
+        e.slowTimer -= dt * slowDecayRate;
         if (e.slowTimer <= 0) {
           e.slowFactor = 1.0;
         }
@@ -2103,11 +2106,27 @@ export default function App() {
               for (const creep of s.enemies) {
                 if (creep.isDead) continue;
                 if (Math.hypot(creep.x - target.x, creep.y - target.y) <= 110) {
-                  creep.slowTimer = slowDur;
-                  creep.slowFactor = 0.68;
-                  if (Math.random() < 0.2) {
-                    creep.freezeTimer = 0.5;
-                    addFloatingText(creep.x, creep.y - 16, dict.frozen, '#38bdf8');
+                  const isBoss = creep.type === 'BOSS';
+                  const isBehemoth = creep.type === 'BEHEMOTH';
+
+                  // Slow duration & factor scaled by enemy size/resistance
+                  const enemySlowDur = isBoss ? slowDur * 0.4 : isBehemoth ? slowDur * 0.6 : slowDur;
+                  const enemySlowFactor = isBoss ? 0.90 : isBehemoth ? 0.84 : 0.68;
+                  creep.slowTimer = enemySlowDur;
+                  creep.slowFactor = enemySlowFactor;
+
+                  // Reduced freeze chance & duration on large enemies and bosses
+                  const freezeChance = isBoss ? 0.03 : isBehemoth ? 0.08 : 0.20;
+                  const freezeDur = isBoss ? 0.15 : isBehemoth ? 0.25 : 0.50;
+
+                  if (creep.freezeTimer <= 0 && Math.random() < freezeChance) {
+                    creep.freezeTimer = freezeDur;
+                    const freezeTag = isBoss
+                      ? `${dict.frozen} (30%)`
+                      : isBehemoth
+                      ? `${dict.frozen} (50%)`
+                      : dict.frozen;
+                    addFloatingText(creep.x, creep.y - 16, freezeTag, '#38bdf8');
                   }
                   applyEnemyDamage(creep, Math.round(t.damage * critMult), 'CRYO', '#38bdf8', isCrit);
                 }
@@ -2115,16 +2134,21 @@ export default function App() {
               addParticleBurst(target.x, target.y, 8, '#38bdf8');
             } else if (t.variant === 'SHATTER') {
               // Sub-Zero Shatter: Applies Brittle with moderate slow
-              target.slowTimer = slowDur;
-              target.slowFactor = 0.70;
-              target.brittleTimer = 2.5;
+              const isBoss = target.type === 'BOSS';
+              const isBehemoth = target.type === 'BEHEMOTH';
+              target.slowTimer = isBoss ? slowDur * 0.4 : isBehemoth ? slowDur * 0.6 : slowDur;
+              target.slowFactor = isBoss ? 0.90 : isBehemoth ? 0.85 : 0.70;
+              target.brittleTimer = isBoss ? 1.5 : isBehemoth ? 2.0 : 2.5;
               applyEnemyDamage(target, Math.round(t.damage * critMult), 'CRYO', '#38bdf8', isCrit);
               addFloatingText(target.x, target.y - 20, dict.brittle, '#06b6d4');
               addParticleBurst(target.x, target.y, 4, '#06b6d4');
             } else {
               // Standard Cryo Beam
-              target.slowTimer = slowDur;
-              target.slowFactor = t.level === 1 ? 0.70 : t.level === 2 ? 0.66 : 0.62;
+              const isBoss = target.type === 'BOSS';
+              const isBehemoth = target.type === 'BEHEMOTH';
+              const baseSlow = t.level === 1 ? 0.70 : t.level === 2 ? 0.66 : 0.62;
+              target.slowTimer = isBoss ? slowDur * 0.4 : isBehemoth ? slowDur * 0.6 : slowDur;
+              target.slowFactor = isBoss ? 0.90 : isBehemoth ? 0.84 : baseSlow;
               applyEnemyDamage(target, Math.round(t.damage * critMult), 'CRYO', '#38bdf8', isCrit);
               addParticleBurst(target.x, target.y, 2, '#38bdf8');
             }
